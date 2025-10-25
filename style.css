@@ -19,7 +19,7 @@ body{
   overflow-x:hidden;
 }
 
-/* ----- خلفية نار متحركة ----- */
+/* خلفية نارية */
 .fire-bg{
   position:fixed;
   inset:0;
@@ -31,15 +31,13 @@ body{
   filter:blur(8px) saturate(120%);
   animation: flicker 6s infinite;
 }
-
-/* subtle flicker */
 @keyframes flicker {
   0%{filter:blur(5px) saturate(110%) brightness(1);}
   50%{filter:blur(9px) saturate(120%) brightness(1.03);}
   100%{filter:blur(6px) saturate(115%) brightness(1);}
 }
 
-/* ----- الهيدر ----- */
+/* header */
 .site-header{
   position:sticky;
   top:0;
@@ -65,7 +63,7 @@ body{
 }
 .nav a:hover{color:var(--accent);transform:translateY(-2px);transition:all .2s}
 
-/* ----- hero ----- */
+/* hero */
 .hero{
   text-align:center;
   padding:70px 20px 40px;
@@ -76,9 +74,9 @@ body{
 .cta{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:700;box-shadow:0 6px 18px rgba(255,60,0,0.12)}
 .cta:hover{transform:translateY(-3px)}
 
-/* ----- المنتجات ----- */
+/* products */
 .section-title{margin:18px 0 6px;text-align:center;font-size:1.4rem}
-.products{padding:30px 16px 60px}
+.products{padding:30px 16px 20px}
 .product-grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
@@ -105,7 +103,7 @@ body{
 .price{color:var(--accent);font-weight:700;margin:6px 0}
 .meta{opacity:0.9;font-size:0.95rem;margin-bottom:10px}
 
-.card-actions{display:flex;gap:8px}
+.card-actions{display:flex;gap:8px;flex-wrap:wrap}
 .btn{
   display:inline-block;
   padding:8px 12px;border-radius:8px;text-decoration:none;color:#fff;background:rgba(255,255,255,0.06);
@@ -115,18 +113,42 @@ body{
 .btn.buy{background:var(--accent);border:none}
 .btn:hover{transform:translateY(-3px)}
 
-/* ----- كيف تشتري / تواصل ----- */
+/* gallery */
+.gallery{padding:20px 16px 40px}
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:12px;
+  max-width:1100px;margin:12px auto;
+}
+.gallery-item{
+  width:100%;
+  height:140px;
+  object-fit:cover;
+  border-radius:8px;
+  cursor:pointer;
+  transition:transform .25s, box-shadow .25s;
+  border:2px solid rgba(255,255,255,0.03);
+}
+.gallery-item:hover{transform:scale(1.03);box-shadow:0 8px 24px rgba(255,60,0,0.06)}
+
+/* how & contact */
 .how, .contact{max-width:900px;margin:28px auto;padding:18px}
 .how ol{padding-left:20px;direction:rtl}
 .contact a{color:var(--accent)}
 
-/* ----- الفوتر ----- */
+/* footer */
 .site-footer{
-  text-align:center;padding:14px;background:linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:14px 28px;background:linear-gradient(180deg, rgba(0,0,0,0.4), rgba(0,0,0,0.6));
   border-top:1px solid rgba(255,255,255,0.03)
 }
+.footer-right{display:flex;align-items:center;gap:10px}
+.social-icon{width:22px;height:22px;object-fit:contain;filter:invert(1)}
 
-/* ----- مودال التفاصيل ----- */
+/* modal */
 .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:50;padding:20px}
 .modal.hidden{display:none}
 .modal-content{background:linear-gradient(180deg,#0b0b0b,#0e0e0e);width:900px;max-width:100%;border-radius:12px;display:flex;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
@@ -136,8 +158,9 @@ body{
 .modal-price{color:var(--accent);font-weight:800;font-size:1.2rem}
 .modal-close{position:absolute;right:18px;top:18px;background:transparent;color:#fff;font-size:28px;border:none;cursor:pointer}
 
-/* ----- تجاوب للصغير ----- */
+/* responsive */
 @media(max-width:700px){
   .modal-content{flex-direction:column}
   .img-wrap{height:200px}
+  .gallery-item{height:120px}
 }
