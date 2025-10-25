@@ -1,51 +1,79 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trax Shop 🔥</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Basco — متجر حسابات وشحن</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <h1 class="logo">🔥 Trax Shop 🔥</h1>
-        <nav>
-            <a href="#products">المنتجات</a>
-            <a href="#about">عن المتجر</a>
-            <a href="https://YOUR-LINK" target="_blank">https://www.instagram.com/28_tah?igsh=aTFueGIxZHJsMHRn</a>
-        </nav>
-    </header>
+  <!-- خلفية نارية -->
+  <div class="fire-bg"></div>
 
+  <header class="site-header">
+    <div class="brand">
+      <img src="images/logo.png" alt="Basco Logo" class="logo">
+      <h1>Basco</h1>
+    </div>
+    <nav class="nav">
+      <a href="#products">المنتجات</a>
+      <a href="#how">كيف تشتري</a>
+      <a href="#contact">تواصل معنا</a>
+    </nav>
+  </header>
+
+  <main>
     <section class="hero">
-        <h2>مرحبًا بك في عالم تراكس الملحمي!</h2>
-        <p>تسوق بستايل... النيران مشتعلة دائمًا 🔥</p>
-        <a href="#products" class="btn">ابدأ التسوق</a>
+      <h2>أقوى حسابات Free Fire وبطاقات Google Play</h2>
+      <p>حسابات مضمونة ★ دعم سريع ★ توصيل فوري</p>
+      <a href="#products" class="cta">اكتشف المنتجات</a>
     </section>
 
     <section id="products" class="products">
-        <h2>منتجاتنا النارية</h2>
-        <div class="product-grid">
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="منتج 1">
-                <h3>حسابات Trax</h3>
-                <p>حسابات نقاط تشغيل جوجل بلاي🔥</p>
-                <button>شراء الآن</button>
+      <h2 class="section-title">منتجاتنا</h2>
+
+      <div class="product-grid">
+
+        <!-- بطاقة منتج 1 -->
+        <article class="product-card">
+          <div class="img-wrap">
+            <img src="images/ff-account1.jpg" alt="حساب Free Fire 1">
+          </div>
+          <div class="card-body">
+            <h3>حساب Free Fire نادر</h3>
+            <p class="price">السعر: 15$</p>
+            <p class="meta">مستوى عالي — جلد نادر — الكثير من الماسات</p>
+            <div class="card-actions">
+              <button class="btn details" data-title="حساب Free Fire نادر" data-img="images/ff-account1.jpg" data-price="15$" data-desc="حساب مستواه 80، به جلود وسكنات نادرة.">تفاصيل</button>
+              <a class="btn buy" href="mailto:youremail@example.com?subject=طلب%20شراء%20حساب%20Free%20Fire%20نادر&body=مرحباً%20أريد%20شراء%20حساب%20Free%20Fire%20نادر" rel="noopener">اشتري الآن</a>
             </div>
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="منتج 2">
-                <h3>تباع دراري  Trax</h3>
-                <p>حساب زيزو مرنك  😎</p>
-                <button>شراء الآن</button>
+          </div>
+        </article>
+
+        <!-- بطاقة منتج 2 -->
+        <article class="product-card">
+          <div class="img-wrap">
+            <img src="images/ff-account2.jpg" alt="حساب Free Fire 2">
+          </div>
+          <div class="card-body">
+            <h3>حساب Free Fire ميد-لاين</h3>
+            <p class="price">السعر: 8$</p>
+            <p class="meta">مناسب للّعب اليومي، به عناصر جيدة</p>
+            <div class="card-actions">
+              <button class="btn details" data-title="حساب Free Fire ميد-لاين" data-img="images/ff-account2.jpg" data-price="8$" data-desc="مستوى 40، عناصر متوازنة وبداية جيدة">تفاصيل</button>
+              <a class="btn buy" href="mailto:youremail@example.com?subject=طلب%20شراء%20حساب%20Free%20Fire%20ميد-لاين&body=مرحباً%20أريد%20شراء%20حساب%20Free%20Fire%20ميد-لاين" rel="noopener">اشتري الآن</a>
             </div>
-        </div>
-    </section>
+          </div>
+        </article>
 
-    <footer>
-        <p>© 2025 Trax Shop | تم التصميم بحب 🔥</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
-</html>
-
-
+        <!-- بطاقة شحن Google Play -->
+        <article class="product-card">
+          <div class="img-wrap">
+            <img src="images/gp-card1.jpg" alt="بطاقة Google Play 10$">
+          </div>
+          <div class="card-body">
+            <h3>كود Google Play - 10 دولار</h3>
+            <p class="price">السعر: 10$</p>
+            <p class="meta">رصيد صالح على متجر Google Play — توصيل فوري</p>
+            <div class="card-actions">
+              <button class="btn details"
