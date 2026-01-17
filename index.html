@@ -1,152 +1,342 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Basco — متجر حسابات وشحن</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algerian City — متجر وخدمات</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+}
+
+body{
+  background:#0b0b0b;
+  color:#fff;
+  overflow-x:hidden;
+}
+
+/* خلفية نارية */
+.fire-bg{
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at top, #ff6a00 0%, transparent 40%),
+    linear-gradient(#140000,#000);
+  z-index:-1;
+  opacity:0.35;
+}
+
+/* الهيدر */
+.site-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(6px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.logo{
+  width:45px;
+}
+
+.nav a{
+  color:#fff;
+  text-decoration:none;
+  margin:0 10px;
+  font-weight:500;
+}
+
+.nav a:hover{
+  color:#ff6a00;
+}
+
+/* البطل */
+.hero{
+  text-align:center;
+  padding:80px 20px;
+}
+
+.hero h2{
+  font-size:2.2rem;
+  margin-bottom:15px;
+}
+
+.hero p{
+  opacity:0.9;
+}
+
+.cta{
+  display:inline-block;
+  margin-top:20px;
+  padding:12px 25px;
+  background:#ff6a00;
+  color:#000;
+  text-decoration:none;
+  font-weight:bold;
+  border-radius:8px;
+}
+
+/* الأقسام */
+.section-title{
+  text-align:center;
+  margin-bottom:30px;
+  font-size:1.8rem;
+}
+
+.products,.gallery,.how,.contact{
+  padding:60px 20px;
+}
+
+/* المنتجات */
+.product-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
+}
+
+.product-card{
+  background:#111;
+  border-radius:15px;
+  overflow:hidden;
+  box-shadow:0 0 15px rgba(0,0,0,0.6);
+}
+
+.img-wrap img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+
+.card-body{
+  padding:15px;
+}
+
+.price{
+  color:#ff6a00;
+  margin:8px 0;
+}
+
+.meta{
+  font-size:0.9rem;
+  opacity:0.7;
+}
+
+.card-actions{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.btn{
+  flex:1;
+  padding:8px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  text-align:center;
+  text-decoration:none;
+}
+
+.details{
+  background:#333;
+  color:#fff;
+}
+
+.buy{
+  background:#ff6a00;
+  color:#000;
+  font-weight:bold;
+}
+
+/* المعرض */
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:15px;
+}
+
+.gallery-item{
+  width:100%;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+/* كيف تشتري */
+.how ol{
+  max-width:500px;
+  margin:auto;
+  line-height:2;
+}
+
+/* التواصل */
+.contact a{
+  color:#ff6a00;
+  text-decoration:none;
+}
+
+/* الفوتر */
+.site-footer{
+  background:#000;
+  padding:20px;
+  display:flex;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+
+/* المودال */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.hidden{display:none;}
+
+.modal-content{
+  background:#111;
+  border-radius:15px;
+  display:flex;
+  gap:20px;
+  padding:20px;
+  max-width:700px;
+  width:90%;
+}
+
+.modal-left img{
+  width:250px;
+  border-radius:10px;
+}
+
+.modal-close{
+  position:absolute;
+  top:15px;
+  left:20px;
+  font-size:30px;
+  background:none;
+  border:none;
+  color:#fff;
+  cursor:pointer;
+}
+</style>
 </head>
+
 <body>
-  <!-- خلفية نارية -->
-  <div class="fire-bg"></div>
 
-  <header class="site-header">
-    <div class="brand">
-      <img src="images/logo.png" alt="Basco Logo" class="logo">
-      <h1>Basco</h1>
+<div class="fire-bg"></div>
+
+<header class="site-header">
+  <div class="brand">
+    <img src="images/logo.png" class="logo">
+    <h1>Algerian City</h1>
+  </div>
+  <nav class="nav">
+    <a href="#products">المنتجات</a>
+    <a href="#gallery">المعرض</a>
+    <a href="#contact">التواصل</a>
+    <a href="https://discord.gg/YOUR_DISCORD_LINK" target="_blank">ديسكورد</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <h2>مرحباً بكم في سيرفر Algerian City</h2>
+  <p>متجر حسابات • شحن • دعم سريع • موثوق</p>
+  <a href="#products" class="cta">تصفح الخدمات</a>
+</section>
+
+<section id="products" class="products">
+  <h2 class="section-title">المنتجات</h2>
+
+  <div class="product-grid">
+    <article class="product-card">
+      <div class="img-wrap">
+        <img src="images/ff-account1.jpg">
+      </div>
+      <div class="card-body">
+        <h3>حساب Free Fire</h3>
+        <p class="price">غير متوفر</p>
+        <div class="card-actions">
+          <button class="btn details"
+            data-title="حساب Free Fire"
+            data-desc="حساب قوي بسكنات نادرة"
+            data-price="غير متوفر"
+            data-img="images/ff-account1.jpg">تفاصيل</button>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="gallery" class="gallery">
+  <h2 class="section-title">معرض الصور</h2>
+  <div class="gallery-grid">
+    <img src="images/تنزيل (1).jpg" class="gallery-item">
+    <img src="images/تنزيل (2).jpg" class="gallery-item">
+    <img src="images/تنزيل (3).jpg" class="gallery-item">
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <h2 class="section-title">تواصل معنا</h2>
+  <p>واتساب: <a href="https://wa.me/213792842619">اضغط هنا</a></p>
+  <p>ديسكورد: <a href="https://discord.gg/YOUR_DISCORD_LINK" target="_blank">انضم للسيرفر</a></p>
+  <p>إنستغرام: <a href="https://www.instagram.com/28_tah" target="_blank">@28_tah</a></p>
+</section>
+
+<footer class="site-footer">
+  <p>© <span id="year"></span> Algerian City</p>
+</footer>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <button class="modal-close">&times;</button>
+    <div class="modal-left">
+      <img id="modalImg">
     </div>
-    <nav class="nav">
-      <a href="#products">المنتجات</a>
-      <a href="#gallery">معرض الصور</a>
-      <a href="#how">كيف تشتري</a>
-      <a href="#contact">تواصل معنا</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero">
-      <h2>حسابات فري فاير و نقاط تشغيل </h2>
-      <p>حسابات مضمونة ★ دعم سريع ★ توصيل فوري</p>
-      <a href="#products" class="cta">اكتشف المنتجات</a>
-    </section>
-
-    <section id="products" class="products">
-      <h2 class="section-title">منتجاتنا</h2>
-
-      <div class="product-grid">
-
-        <!-- بطاقة منتج 1 -->
-        <article class="product-card">
-          <div class="img-wrap">
-            <img src="images/ff-account1.jpg" alt="حساب Free Fire 1">
-          </div>
-          <div class="card-body">
-            <h3>حساب Free Fire </h3>
-            <p class="price">السعر: غير محدد$</p>
-            <p class="meta">لا يتوفر هذا المنتج</p>
-            <div class="card-actions">
-              <button class="btn details" data-title="حساب Free Fire نادر" data-img="images/ff-account1.jpg" data-price="15$" data-desc="حساب مستواه 80، به جلود وسكنات نادرة.">تفاصيل</button>
-              <a class="btn buy" href="mailto:youremail@example.com?subject=طلب%20شراء%20حساب%20Free%20Fire%20نادر&body=مرحباً%20أريد%20شراء%20حساب%20Free%20Fire%20نادر" rel="noopener">غير متوفر هذا المنتج </a>
-            </div>
-          </div>
-        </article>
-
-        <!-- بطاقة منتج 2 -->
-        <article class="product-card">
-          <div class="img-wrap">
-            <img src="images/ff-account2.jpg" alt="حساب Free Fire 2">
-          </div>
-          <div class="card-body">
-            <h3>حساب Free Fire ميد-لاين</h3>
-            <p class="price">السعر: 8$</p>
-            <p class="meta">غير متوفر</p>
-            <div class="card-actions">
-              <button class="btn details" data-title="حساب Free Fire ميد-لاين" data-img="images/ff-account2.jpg" data-price="8$" data-desc="مستوى 40، عناصر متوازنة وبداية جيدة">تفاصيل</button>
-              <a class="btn buy" href="mailto:youremail@example.com?subject=طلب%20شراء%20حساب%20Free%20Fire%20ميد-لاين&body=مرحباً%20أريد%20شراء%20حساب%20Free%20Fire%20ميد-لاين" rel="noopener">اشتري الآن</a>
-            </div>
-          </div>
-        </article>
-
-        <!-- بطاقة شحن Google Play -->
-        <article class="product-card">
-          <div class="img-wrap">
-            <img src="images/gp-card1.jpg" alt="بطاقة Google Play 10$">
-          </div>
-          <div class="card-body">
-            <h3>كود Google Play - 10 دولار</h3>
-            <p class="price">السعر: 10$</p>
-            <p class="meta">غير متوفر</p>
-            <div class="card-actions">
-              <button class="btn details" data-title="كود Google Play - 10$" data-img="images/gp-card1.jpg" data-price="10$" data-desc="كود بقيمة 10$ صالح دولي">تفاصيل</button>
-              <a class="btn buy" href="mailto:youremail@example.com?subject=طلب%20شراء%20كود%20Google%20Play%2010%24&body=مرحباً%20أريد%20شراء%20كود%20Google%20Play%2010%24" rel="noopener">اشتري الآن</a>
-            </div>
-          </div>
-        </article>
-
-      </div>
-    </section>
-
-    <!-- معرض الصور -->
-    <section id="gallery" class="gallery">
-      <h2 class="section-title">معرض الصور</h2>
-      <p style="text-align:center;opacity:0.9">صور للحسابات والكروت — اضغط على أي صورة لتكبيرها</p>
-
-      <div class="gallery-grid">
-        <img src="images/تنزيل (1).jpg" alt="FF 1" class="gallery-item">
-        <img src="images/تنزيل (2).jpg" alt="FF 2" class="gallery-item">
-        <img src="images/تنزيل (3).jpg" alt="GP 10$" class="gallery-item">
-        <img src="images/تنزيل.jpg" alt="منتج 4" class="gallery-item">
-        <img src="images/تنزيل.png" alt="منتج 5" class="gallery-item">
-      </div>
-    </section>
-
-    <section id="how" class="how">
-      <h2 class="section-title">كيف تشتري</h2>
-      <ol>
-        <li>اختَر المنتج وانقر "اشتري الآن".</li>
-        <li>راسلنا عبر الإيميل أو WhatsApp للدفع والتأكيد.</li>
-        <li>نقدّم لك التفاصيل أو الكود فوراً بعد التأكيد.</li>
-      </ol>
-    </section>
-
-    <section id="contact" class="contact">
-      <h2 class="section-title">تواصل معنا</h2>
-      <p>للطلبات العاجلة تواصل عبر WhatsApp: <a href="https://wa.me/+213792842619" target="_blank" rel="noopener">اضغط هنا</a></p>
-      <p>أو عبر الإيميل: <a href="mailto:youremail@example.com">tahar.abde.alfeteh@gmail.com</a></p>
-      <p>تابعنا على إنستغرام: <a class="insta-link" href="https://www.instagram.com/28_tah?igsh=aTFueGIxZHJsMHRn" target="_blank" rel="noopener">https://www.instagram.com/28_tah</a></p>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="footer-left">
-      <p>© <span id="year"></span> Basco — من إنتاج طاهر وزياد</p>
-    </div>
-    <div class="footer-right">
-      <a class="social" href="https://www.instagram.com/28_tah?igsh=aTFueGIxZHJsMHRn" target="_blank" rel="noopener">
-        <img src="images/instagram-icon.png" alt="Instagram" class="social-icon"> تابعنا على إنستغرام
-      </a>
-    </div>
-  </footer>
-
-  <!-- نافذة التفاصيل -->
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <button id="modalClose" class="modal-close">&times;</button>
-      <div class="modal-left">
-        <img id="modalImg" src="" alt="صورة المنتج">
-      </div>
-      <div class="modal-right">
-        <h3 id="modalTitle"></h3>
-        <p id="modalDesc"></p>
-        <p class="modal-price" id="modalPrice"></p>
-        <a id="modalBuy" class="btn buy" href="#">اشتري الآن</a>
-      </div>
+    <div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalDesc"></p>
+      <p id="modalPrice" class="price"></p>
     </div>
   </div>
+</div>
 
-  <script src="script.js"></script>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+
+const modal = document.getElementById("modal");
+const modalImg = document.getElementById("modalImg");
+const modalTitle = document.getElementById("modalTitle");
+const modalDesc = document.getElementById("modalDesc");
+const modalPrice = document.getElementById("modalPrice");
+
+document.querySelectorAll(".details").forEach(btn=>{
+  btn.onclick=()=>{
+    modalImg.src = btn.dataset.img;
+    modalTitle.textContent = btn.dataset.title;
+    modalDesc.textContent = btn.dataset.desc;
+    modalPrice.textContent = btn.dataset.price;
+    modal.classList.remove("hidden");
+  }
+});
+
+document.querySelector(".modal-close").onclick=()=>{
+  modal.classList.add("hidden");
+};
+</script>
+
 </body>
 </html>
-
-
-
