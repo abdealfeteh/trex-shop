@@ -1,82 +1,944 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>Algerian City RP | MTA</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body{
-      margin:0;
-      font-family:Tahoma;
-      background:linear-gradient(120deg,#1a002b,#6a2cff,#ff4fd8,#000);
-      background-size:400% 400%;
-      animation:bg 12s ease infinite;
-      color:white;
-    }
-    @keyframes bg{
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-    }
-    header{text-align:center;padding:40px}
-    .logo{
-      width:180px;height:180px;
-      margin:0 auto 20px;
-      border-radius:50%;
-      background:#000;
-      box-shadow:0 0 30px #ff4fd8;
-      display:flex;align-items:center;justify-content:center;
-    }
-    .logo img{
-      width:100%;height:100%;
-      object-fit:contain;
-      border-radius:50%;
-    }
-    section{
-      max-width:900px;
-      margin:20px auto;
-      background:rgba(0,0,0,.4);
-      padding:25px;
-      border-radius:20px;
-    }
-    a.btn{
-      display:block;
-      text-align:center;
-      padding:15px;
-      margin:10px 0;
-      background:linear-gradient(135deg,#6a2cff,#ff4fd8);
-      color:white;
-      text-decoration:none;
-      border-radius:15px;
-      font-weight:bold;
-    }
-  </style>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTA:SA Server Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --bg2: #080d1a;
+    --bg3: #0d1526;
+    --card: #0f1a2e;
+    --border: #1a2d4a;
+    --accent: #00d4ff;
+    --accent2: #ff6b35;
+    --accent3: #00ff88;
+    --gold: #ffd700;
+    --text: #e0eeff;
+    --muted: #6a8aaa;
+    --danger: #ff3b3b;
+    --warn: #ffaa00;
+    --glow: 0 0 20px rgba(0,212,255,0.3);
+    --glow2: 0 0 20px rgba(0,255,136,0.3);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== PAGES ===== */
+  .page { display: none; position: relative; z-index: 1; }
+  .page.active { display: block; }
+
+  /* ===== NAV ===== */
+  nav {
+    background: rgba(8,13,26,0.95);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(20px);
+  }
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .nav-logo span { color: var(--accent2); }
+  .nav-tabs { display: flex; gap: 4px; }
+  .nav-tab {
+    padding: 8px 18px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .nav-tab:hover { color: var(--text); border-color: var(--border); }
+  .nav-tab.active { background: rgba(0,212,255,0.1); color: var(--accent); border-color: var(--accent); }
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+  .server-status {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-size: 0.8rem;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent3);
+    animation: pulse 2s infinite;
+    box-shadow: 0 0 8px var(--accent3);
+  }
+  .dot.offline { background: var(--danger); box-shadow: 0 0 8px var(--danger); animation: none; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    padding: 10px 24px; border-radius: 8px; border: none;
+    cursor: pointer; font-family: 'Tajawal', sans-serif;
+    font-size: 0.95rem; font-weight: 600; transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent); color: #000;
+    box-shadow: 0 0 15px rgba(0,212,255,0.3);
+  }
+  .btn-primary:hover { box-shadow: 0 0 25px rgba(0,212,255,0.6); transform: translateY(-1px); }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-warn { background: var(--warn); color: #000; }
+  .btn-ghost {
+    background: transparent; color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-sm { padding: 6px 14px; font-size: 0.82rem; }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+  .card-glow { box-shadow: var(--glow); border-color: rgba(0,212,255,0.3); }
+
+  /* ===== STATS GRID ===== */
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+  }
+  .stat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .stat-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  }
+  .stat-card.blue::before { background: linear-gradient(90deg, var(--accent), transparent); }
+  .stat-card.green::before { background: linear-gradient(90deg, var(--accent3), transparent); }
+  .stat-card.orange::before { background: linear-gradient(90deg, var(--accent2), transparent); }
+  .stat-card.gold::before { background: linear-gradient(90deg, var(--gold), transparent); }
+  .stat-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .stat-value { font-family: 'Orbitron', monospace; font-size: 2rem; font-weight: 700; }
+  .stat-card.blue .stat-value { color: var(--accent); }
+  .stat-card.green .stat-value { color: var(--accent3); }
+  .stat-card.orange .stat-value { color: var(--accent2); }
+  .stat-card.gold .stat-value { color: var(--gold); }
+  .stat-icon { font-size: 2rem; position: absolute; left: 20px; top: 50%; transform: translateY(-50%); opacity: 0.15; }
+
+  /* ===== PLAYERS TABLE ===== */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { border-bottom: 1px solid var(--border); }
+  th { padding: 12px 16px; text-align: right; font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 500; }
+  td { padding: 12px 16px; font-size: 0.9rem; border-bottom: 1px solid rgba(26,45,74,0.5); }
+  tr:hover td { background: rgba(0,212,255,0.03); }
+  .player-name { display: flex; align-items: center; gap: 10px; }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; font-weight: 700;
+  }
+  .ping-bar {
+    display: inline-block;
+    height: 6px; border-radius: 3px;
+    vertical-align: middle; margin-left: 6px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700;
+  }
+  .badge-admin { background: rgba(255,107,53,0.15); color: var(--accent2); border: 1px solid var(--accent2); }
+  .badge-vip { background: rgba(255,215,0,0.1); color: var(--gold); border: 1px solid var(--gold); }
+  .badge-player { background: rgba(0,212,255,0.1); color: var(--accent); border: 1px solid var(--accent); }
+  .badge-online { background: rgba(0,255,136,0.1); color: var(--accent3); }
+  .badge-offline { background: rgba(255,59,59,0.1); color: var(--danger); }
+
+  /* ===== LOGIN MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 200;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    width: 400px;
+    max-width: 95vw;
+    position: relative;
+  }
+  .modal-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.3rem;
+    color: var(--accent);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .modal-sub { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
+  .form-group { margin-bottom: 18px; }
+  label { display: block; font-size: 0.82rem; color: var(--muted); margin-bottom: 8px; }
+  input[type=text], input[type=password] {
+    width: 100%; padding: 12px 16px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text);
+    font-family: 'Tajawal', sans-serif; font-size: 0.95rem;
+    transition: border-color 0.2s; outline: none;
+  }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
+  .form-error { color: var(--danger); font-size: 0.82rem; margin-top: 6px; display: none; }
+
+  /* ===== SECTION ===== */
+  .section { padding: 28px 24px; max-width: 1400px; margin: 0 auto; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem; color: var(--text);
+  }
+  .section-title span { color: var(--accent); }
+
+  /* ===== HERO ===== */
+  .hero {
+    padding: 60px 24px 40px;
+    max-width: 1400px; margin: 0 auto;
+    text-align: center;
+  }
+  .hero-tag {
+    display: inline-block;
+    padding: 4px 16px; border-radius: 20px;
+    background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3);
+    color: var(--accent); font-size: 0.78rem; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900; line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 .hl { color: var(--accent); text-shadow: var(--glow); }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 500px; margin: 0 auto 32px; }
+
+  /* ===== ADMIN PANEL ===== */
+  .admin-grid { display: grid; grid-template-columns: 260px 1fr; gap: 20px; }
+  .admin-sidebar { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; border-radius: 8px;
+    cursor: pointer; transition: all 0.2s;
+    font-size: 0.9rem; color: var(--muted);
+    border: 1px solid transparent; margin-bottom: 4px;
+  }
+  .sidebar-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+  .sidebar-item.active { color: var(--accent); background: rgba(0,212,255,0.08); border-color: rgba(0,212,255,0.2); }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 12px 0; }
+  .admin-content { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+  .admin-section { display: none; }
+  .admin-section.active { display: block; }
+
+  /* ===== PROFILE ===== */
+  .profile-hero {
+    background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(0,255,136,0.05));
+    border: 1px solid var(--border); border-radius: 16px;
+    padding: 32px; display: flex; align-items: center; gap: 24px;
+    margin-bottom: 24px;
+  }
+  .profile-avatar {
+    width: 80px; height: 80px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; font-weight: 900;
+    border: 2px solid var(--accent);
+    box-shadow: var(--glow);
+    flex-shrink: 0;
+  }
+  .profile-info h2 { font-size: 1.5rem; margin-bottom: 4px; }
+  .profile-info .role { color: var(--muted); font-size: 0.85rem; margin-bottom: 12px; }
+  .profile-stats { display: flex; gap: 24px; }
+  .ps { text-align: center; }
+  .ps .val { font-family: 'Orbitron', monospace; font-size: 1.2rem; color: var(--accent); }
+  .ps .lbl { font-size: 0.75rem; color: var(--muted); }
+
+  .progress-bar-wrap { background: var(--bg); border-radius: 6px; height: 8px; margin-top: 6px; }
+  .progress-bar { height: 8px; border-radius: 6px; background: linear-gradient(90deg, var(--accent), var(--accent3)); }
+
+  /* ===== SERVER CONFIG ===== */
+  .config-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .config-label { font-size: 0.9rem; }
+  .config-value { font-size: 0.85rem; color: var(--muted); }
+  .toggle {
+    position: relative; display: inline-block;
+    width: 44px; height: 24px;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .toggle-slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: var(--bg); border-radius: 24px; border: 1px solid var(--border);
+    transition: 0.3s;
+  }
+  .toggle-slider::before {
+    content: ''; position: absolute;
+    height: 16px; width: 16px; left: 3px; bottom: 3px;
+    background: var(--muted); border-radius: 50%; transition: 0.3s;
+  }
+  input:checked + .toggle-slider { background: rgba(0,212,255,0.15); border-color: var(--accent); }
+  input:checked + .toggle-slider::before { transform: translateX(20px); background: var(--accent); }
+
+  /* ===== CHAT LOG ===== */
+  .chat-log {
+    height: 300px; overflow-y: auto;
+    background: var(--bg); border-radius: 8px; padding: 16px;
+  }
+  .chat-log::-webkit-scrollbar { width: 6px; }
+  .chat-log::-webkit-scrollbar-track { background: transparent; }
+  .chat-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .chat-msg { display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.85rem; }
+  .chat-time { color: var(--muted); font-family: monospace; font-size: 0.75rem; flex-shrink: 0; }
+  .chat-player { color: var(--accent); font-weight: 700; flex-shrink: 0; }
+  .chat-text { color: var(--text); }
+
+  /* ===== TOPBAR USER ===== */
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 14px 6px 8px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .user-chip:hover { border-color: var(--accent); }
+  .user-chip-av {
+    width: 26px; height: 26px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700;
+  }
+  .user-chip-name { font-size: 0.82rem; }
+  .user-chip-role { font-size: 0.72rem; color: var(--muted); }
+
+  /* ===== LEADERBOARD ===== */
+  .lb-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 12px 0; border-bottom: 1px solid rgba(26,45,74,0.5);
+  }
+  .lb-rank {
+    font-family: 'Orbitron', monospace; font-size: 1rem;
+    color: var(--muted); width: 32px; text-align: center;
+  }
+  .lb-rank.gold { color: #ffd700; }
+  .lb-rank.silver { color: #c0c0c0; }
+  .lb-rank.bronze { color: #cd7f32; }
+  .lb-info { flex: 1; }
+  .lb-name { font-weight: 600; font-size: 0.9rem; }
+  .lb-sub { font-size: 0.75rem; color: var(--muted); }
+  .lb-score { font-family: 'Orbitron', monospace; color: var(--accent); font-size: 0.9rem; }
+
+  /* ===== ANNOUNCEMENTS ===== */
+  .announce-input {
+    display: flex; gap: 10px; margin-bottom: 16px;
+  }
+  .announce-input input { flex: 1; }
+
+  /* toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--card); border: 1px solid var(--accent);
+    border-radius: 10px; padding: 12px 24px;
+    color: var(--accent); font-size: 0.88rem; z-index: 999;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+
+  @media (max-width: 768px) {
+    .admin-grid { grid-template-columns: 1fr; }
+    .profile-hero { flex-direction: column; text-align: center; }
+    .profile-stats { justify-content: center; }
+  }
+</style>
+</head>
 <body>
 
-<header>
-  <div class="logo">
-    <img src="images/image.png" alt="Algerian City RP">
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">⬡ MTA<span>:SA</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('home')">الرئيسية</button>
+    <button class="nav-tab" onclick="showPage('players')">اللاعبون</button>
+    <button class="nav-tab" onclick="showPage('leaderboard')">المتصدرون</button>
+    <button class="nav-tab" id="profileTab" onclick="showPage('profile')" style="display:none">ملفي</button>
+    <button class="nav-tab" id="adminTab" onclick="showPage('admin')" style="display:none">⚙️ الإدارة</button>
   </div>
-  <h1>Algerian City RP</h1>
-  <p>سيرفر MTA رول بلاي جزائري</p>
-</header>
+  <div class="nav-actions">
+    <div class="server-status" id="srvStatus">
+      <div class="dot" id="srvDot"></div>
+      <span id="srvStatusText">متصل</span>
+    </div>
+    <div id="authArea">
+      <button class="btn btn-primary btn-sm" onclick="openLogin()">تسجيل الدخول</button>
+    </div>
+    <div id="userArea" style="display:none">
+      <div class="user-chip" onclick="showPage('profile')">
+        <div class="user-chip-av" id="navAv" style="background:rgba(0,212,255,0.15);color:var(--accent)"></div>
+        <div>
+          <div class="user-chip-name" id="navName"></div>
+          <div class="user-chip-role" id="navRole"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
 
-<section>
-  <h2>عن السيرفر</h2>
-  <p>
-    سيرفر رول بلاي واقعي، الإحترام أساس اللعب،
-    وكل قرار عندو عواقب داخل المدينة.
-  </p>
-</section>
+<!-- ===== HOME PAGE ===== -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-tag">🎮 MTA:SA SERVER PANEL</div>
+    <h1>مرحباً بك في <span class="hl">سيرفرنا</span></h1>
+    <p>تابع إحصائيات السيرفر، شاهد اللاعبين المتصلين، وأكثر في مكان واحد.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-primary" onclick="showPage('players')">🔴 اللاعبون المتصلون</button>
+      <button class="btn btn-ghost" onclick="openLogin()">تسجيل الدخول</button>
+    </div>
+  </div>
 
-<section>
-  <h2>روابط السيرفر</h2>
-  <a class="btn" href="https://discord.gg/e2CzP4yXP9">Discord</a>
-  <a class="btn" href="https://www.instagram.com/trex_charger">Instagram</a>
-  <a class="btn" href="https://www.tiktok.com/@algerian_city">TikTok</a>
-</section>
+  <div class="section">
+    <div class="stats-grid" id="homeStats">
+      <div class="stat-card blue">
+        <div class="stat-label">لاعبون متصلون</div>
+        <div class="stat-value" id="statOnline">—</div>
+        <div class="stat-icon">👥</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-label">أقصى سعة</div>
+        <div class="stat-value" id="statMax">64</div>
+        <div class="stat-icon">⚡</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-label">وقت التشغيل</div>
+        <div class="stat-value" id="statUptime">—</div>
+        <div class="stat-icon">⏱</div>
+      </div>
+      <div class="stat-card gold">
+        <div class="stat-label">الخريطة الحالية</div>
+        <div class="stat-value" style="font-size:1rem;margin-top:4px" id="statMap">—</div>
+        <div class="stat-icon">🗺</div>
+      </div>
+    </div>
+  </div>
 
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">🏆 أفضل <span>اللاعبين</span> اليوم</div>
+    </div>
+    <div class="card" id="topPlayersHome"></div>
+  </div>
+</div>
+
+<!-- ===== PLAYERS PAGE ===== -->
+<div id="page-players" class="page">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">👥 اللاعبون <span>المتصلون</span></div>
+      <button class="btn btn-ghost btn-sm" onclick="refreshData()">🔄 تحديث</button>
+    </div>
+    <div class="card">
+      <div style="margin-bottom:16px;display:flex;gap:10px">
+        <input type="text" id="searchPlayer" placeholder="ابحث عن لاعب..." style="max-width:300px" oninput="filterPlayers()">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>اسم اللاعب</th>
+              <th>الرتبة</th>
+              <th>البينج</th>
+              <th>النقاط</th>
+              <th>المستوى</th>
+            </tr>
+          </thead>
+          <tbody id="playersTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LEADERBOARD PAGE ===== -->
+<div id="page-leaderboard" class="page">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">🏆 لوحة <span>المتصدرين</span></div>
+    </div>
+    <div class="card" id="leaderboardList"></div>
+  </div>
+</div>
+
+<!-- ===== PROFILE PAGE ===== -->
+<div id="page-profile" class="page">
+  <div class="section">
+    <div id="profileContent"></div>
+  </div>
+</div>
+
+<!-- ===== ADMIN PAGE ===== -->
+<div id="page-admin" class="page">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-title">⚙️ لوحة <span>الإدارة</span></div>
+    </div>
+    <div class="admin-grid">
+      <div class="admin-sidebar">
+        <div class="sidebar-item active" onclick="showAdminSection('overview',this)">📊 نظرة عامة</div>
+        <div class="sidebar-item" onclick="showAdminSection('players-admin',this)">👥 إدارة اللاعبين</div>
+        <div class="sidebar-item" onclick="showAdminSection('chat',this)">💬 سجل الدردشة</div>
+        <div class="sidebar-item" onclick="showAdminSection('announce',this)">📢 الإعلانات</div>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-item" onclick="showAdminSection('config',this)">🔧 إعدادات السيرفر</div>
+        <div class="sidebar-item" onclick="showAdminSection('admins',this)">🛡️ قائمة الأدمن</div>
+      </div>
+      <div class="admin-content">
+        <!-- overview -->
+        <div class="admin-section active" id="as-overview">
+          <h3 style="margin-bottom:20px;color:var(--accent)">نظرة عامة على السيرفر</h3>
+          <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
+            <div class="stat-card blue"><div class="stat-label">متصلون الآن</div><div class="stat-value" id="aStatOn">—</div></div>
+            <div class="stat-card green"><div class="stat-label">إجمالي المسجلين</div><div class="stat-value">248</div></div>
+            <div class="stat-card orange"><div class="stat-label">طلبات API</div><div class="stat-value">99</div></div>
+          </div>
+          <div style="margin-top:20px" class="card">
+            <div style="font-size:0.85rem;color:var(--muted);margin-bottom:12px">📋 آخر الأحداث</div>
+            <div id="adminLog" style="font-size:0.85rem;line-height:2"></div>
+          </div>
+        </div>
+
+        <!-- players-admin -->
+        <div class="admin-section" id="as-players-admin">
+          <h3 style="margin-bottom:20px;color:var(--accent)">إدارة اللاعبين</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>اللاعب</th><th>الرتبة</th><th>الحالة</th><th>الإجراءات</th></tr></thead>
+              <tbody id="adminPlayersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- chat -->
+        <div class="admin-section" id="as-chat">
+          <h3 style="margin-bottom:20px;color:var(--accent)">سجل الدردشة</h3>
+          <div class="chat-log" id="chatLog"></div>
+        </div>
+
+        <!-- announce -->
+        <div class="admin-section" id="as-announce">
+          <h3 style="margin-bottom:20px;color:var(--accent)">إرسال إعلان</h3>
+          <div class="announce-input">
+            <input type="text" id="announceMsg" placeholder="اكتب رسالتك للسيرفر...">
+            <button class="btn btn-primary" onclick="sendAnnounce()">إرسال 📢</button>
+          </div>
+          <div class="card" style="font-size:0.85rem;color:var(--muted)">
+            ملاحظة: سيتم إرسال الرسالة لجميع اللاعبين المتصلين عبر chat box في MTA.
+          </div>
+        </div>
+
+        <!-- config -->
+        <div class="admin-section" id="as-config">
+          <h3 style="margin-bottom:20px;color:var(--accent)">إعدادات السيرفر</h3>
+          <div class="config-row"><div><div class="config-label">السماح بالدخول</div><div class="config-value">تفعيل/إيقاف قبول لاعبين جدد</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="config-row"><div><div class="config-label">وضع المشرفين فقط</div><div class="config-value">يسمح فقط للأدمن بالدخول</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+          <div class="config-row"><div><div class="config-label">الدردشة العامة</div><div class="config-value">السماح بالتحدث للجميع</div></div><label class="toggle"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
+          <div class="config-row"><div><div class="config-label">وضع التطوير</div><div class="config-value">إظهار معلومات debug</div></div><label class="toggle"><input type="checkbox"><span class="toggle-slider"></span></label></div>
+        </div>
+
+        <!-- admins -->
+        <div class="admin-section" id="as-admins">
+          <h3 style="margin-bottom:20px;color:var(--accent)">قائمة الأدمن</h3>
+          <div id="adminsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LOGIN MODAL ===== -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <div class="modal-title">🔐 تسجيل الدخول</div>
+    <div class="modal-sub">أدخل بيانات حسابك في السيرفر</div>
+    <div class="form-group">
+      <label>اسم المستخدم</label>
+      <input type="text" id="loginUser" placeholder="اسمك في السيرفر">
+    </div>
+    <div class="form-group">
+      <label>كلمة المرور</label>
+      <input type="password" id="loginPass" placeholder="••••••••">
+      <div class="form-error" id="loginError">❌ اسم المستخدم أو كلمة المرور غير صحيحة</div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:10px" onclick="doLogin()">دخول</button>
+    <button class="btn btn-ghost" style="width:100%" onclick="closeLogin()">إلغاء</button>
+    <div style="margin-top:16px;font-size:0.75rem;color:var(--muted);text-align:center">
+      🔑 للتجربة: <code style="color:var(--accent)">admin / admin123</code> أو <code style="color:var(--accent3)">player1 / pass</code>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== MOCK DATA (Replace with real MTA HTTP API calls) =====
+const MOCK_SERVER = {
+  name: "MTA:SA Server",
+  map: "Los Santos RPG",
+  maxPlayers: 64,
+  gamemode: "Roleplay",
+  online: true,
+  uptimeMinutes: 847
+};
+
+const MOCK_PLAYERS = [
+  { id:1, name:"SHADOW_X", rank:"admin", ping:24, score:15420, level:47, online:true, color:"#ff6b35" },
+  { id:2, name:"Pro_Killer", rank:"vip", ping:68, score:12340, level:38, online:true, color:"#ffd700" },
+  { id:3, name:"xXDarkXx", rank:"player", ping:112, score:9870, level:29, online:true, color:"#00d4ff" },
+  { id:4, name:"Speed_King", rank:"player", ping:45, score:8760, level:25, online:true, color:"#00ff88" },
+  { id:5, name:"Ahmed_GTA", rank:"vip", ping:88, score:7650, level:22, online:false, color:"#ffd700" },
+  { id:6, name:"Ghost_Rider", rank:"player", ping:156, score:5430, level:17, online:true, color:"#00d4ff" },
+  { id:7, name:"Night_Wolf", rank:"player", ping:77, score:4220, level:14, online:true, color:"#a78bfa" },
+  { id:8, name:"Dragon_SA", rank:"player", ping:200, score:3100, level:11, online:false, color:"#fb7185" },
+];
+
+const MOCK_USERS = {
+  "admin": { pass: "admin123", role: "admin", data: MOCK_PLAYERS[0] },
+  "player1": { pass: "pass", role: "player", data: MOCK_PLAYERS[2] },
+};
+
+const CHAT_LOG = [
+  {time:"14:32",player:"SHADOW_X",msg:"مرحباً بالجميع"},
+  {time:"14:35",player:"Pro_Killer",msg:"كيف حالكم ؟"},
+  {time:"14:40",player:"xXDarkXx",msg:"شكراً للأدمن على السيرفر الرائع"},
+  {time:"14:42",player:"Speed_King",msg:"متى السباق الجديد؟"},
+  {time:"14:48",player:"Ghost_Rider",msg:"هل هناك مهام جديدة؟"},
+  {time:"14:52",player:"SHADOW_X",msg:"نعم قريباً تحديث كبير 🔥"},
+  {time:"15:01",player:"Night_Wolf",msg:"يلا نتسابق"},
+  {time:"15:10",player:"Ahmed_GTA",msg:"GG WP للجميع"},
+];
+
+let currentUser = null;
+let allPlayers = [...MOCK_PLAYERS];
+
+// ===== INIT =====
+function init() {
+  refreshData();
+  renderLeaderboard();
+  renderAdminPlayers();
+  renderChatLog();
+  renderAdmins();
+  renderAdminLog();
+  updateServerStatus(MOCK_SERVER.online);
+}
+
+function refreshData() {
+  // In production: fetch('http://YOUR_MTA_IP:PORT/api/players')
+  const online = allPlayers.filter(p => p.online);
+  document.getElementById('statOnline').textContent = online.length;
+  document.getElementById('statMax').textContent = MOCK_SERVER.maxPlayers;
+  document.getElementById('aStatOn').textContent = online.length;
+
+  const up = MOCK_SERVER.uptimeMinutes;
+  document.getElementById('statUptime').textContent = `${Math.floor(up/60)}h${up%60}m`;
+  document.getElementById('statMap').textContent = MOCK_SERVER.map.split(' ')[0];
+
+  renderPlayersTable(allPlayers);
+  renderTopPlayers();
+  showToast('✅ تم تحديث البيانات');
+}
+
+function updateServerStatus(online) {
+  document.getElementById('srvDot').className = 'dot' + (online ? '' : ' offline');
+  document.getElementById('srvStatusText').textContent = online ? 'متصل' : 'غير متصل';
+}
+
+// ===== PAGES =====
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  const tabs = { home:0, players:1, leaderboard:2, profile:3, admin:4 };
+  const allTabs = document.querySelectorAll('.nav-tab');
+  if (allTabs[tabs[name]]) allTabs[tabs[name]].classList.add('active');
+  if (name === 'profile') renderProfile();
+}
+
+// ===== AUTH =====
+function openLogin() { document.getElementById('loginModal').classList.add('open'); }
+function closeLogin() { document.getElementById('loginModal').classList.remove('open'); document.getElementById('loginError').style.display='none'; }
+
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const user = MOCK_USERS[u];
+  if (user && user.pass === p) {
+    currentUser = { username: u, role: user.role, data: user.data };
+    closeLogin();
+    updateNav();
+    showToast('🎉 مرحباً ' + u + '!');
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function updateNav() {
+  if (!currentUser) return;
+  document.getElementById('authArea').style.display = 'none';
+  document.getElementById('userArea').style.display = 'block';
+  document.getElementById('navName').textContent = currentUser.username;
+  document.getElementById('navRole').textContent = currentUser.role === 'admin' ? '🛡️ أدمن' : '🎮 لاعب';
+  document.getElementById('navAv').textContent = currentUser.username[0].toUpperCase();
+  document.getElementById('profileTab').style.display = 'block';
+  if (currentUser.role === 'admin') {
+    document.getElementById('adminTab').style.display = 'block';
+  }
+}
+
+// ===== RENDER PLAYERS TABLE =====
+function renderPlayersTable(players) {
+  const tbody = document.getElementById('playersTable');
+  tbody.innerHTML = players.map((p,i) => `
+    <tr>
+      <td style="color:var(--muted);font-family:monospace">${i+1}</td>
+      <td><div class="player-name">
+        <div class="avatar" style="background:${p.color}22;color:${p.color}">${p.name[0]}</div>
+        ${p.name}
+        ${p.online ? '<span style="width:7px;height:7px;border-radius:50%;background:var(--accent3);display:inline-block;margin-right:6px"></span>' : ''}
+      </div></td>
+      <td><span class="badge badge-${p.rank}">${p.rank==='admin'?'🛡️ أدمن':p.rank==='vip'?'⭐ VIP':'🎮 لاعب'}</span></td>
+      <td>
+        <span style="color:${p.ping<80?'var(--accent3)':p.ping<150?'var(--warn)':'var(--danger)'}">${p.online?p.ping+'ms':'—'}</span>
+        ${p.online?`<span class="ping-bar" style="width:${Math.max(4,20-p.ping/10)}px;background:${p.ping<80?'var(--accent3)':p.ping<150?'var(--warn)':'var(--danger)'}"></span>`:''}
+      </td>
+      <td style="font-family:monospace;color:var(--accent)">${p.score.toLocaleString()}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span>${p.level}</span>
+          <div class="progress-bar-wrap" style="flex:1;max-width:80px">
+            <div class="progress-bar" style="width:${(p.level%10)*10}%"></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterPlayers() {
+  const q = document.getElementById('searchPlayer').value.toLowerCase();
+  const filtered = allPlayers.filter(p => p.name.toLowerCase().includes(q));
+  renderPlayersTable(filtered);
+}
+
+// ===== TOP PLAYERS HOME =====
+function renderTopPlayers() {
+  const sorted = [...allPlayers].sort((a,b) => b.score - a.score).slice(0,5);
+  document.getElementById('topPlayersHome').innerHTML = sorted.map((p,i) => `
+    <div class="lb-row">
+      <div class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+      <div class="avatar" style="background:${p.color}22;color:${p.color};width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700">${p.name[0]}</div>
+      <div class="lb-info">
+        <div class="lb-name">${p.name} ${p.online?'<span style="color:var(--accent3);font-size:0.7rem">● متصل</span>':''}</div>
+        <div class="lb-sub">Lv.${p.level} • ${p.rank==='admin'?'أدمن':p.rank==='vip'?'VIP':'لاعب'}</div>
+      </div>
+      <div class="lb-score">${p.score.toLocaleString()}</div>
+    </div>
+  `).join('');
+}
+
+// ===== LEADERBOARD =====
+function renderLeaderboard() {
+  const sorted = [...allPlayers].sort((a,b) => b.score - a.score);
+  document.getElementById('leaderboardList').innerHTML = sorted.map((p,i) => `
+    <div class="lb-row">
+      <div class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1}</div>
+      <div class="avatar" style="background:${p.color}22;color:${p.color};width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700">${p.name[0]}</div>
+      <div class="lb-info">
+        <div class="lb-name">${p.name} ${p.online?'<span style="color:var(--accent3);font-size:0.7rem">● متصل الآن</span>':''}</div>
+        <div class="lb-sub">المستوى ${p.level} • ${p.rank==='admin'?'🛡️ أدمن':p.rank==='vip'?'⭐ VIP':'🎮 لاعب'}</div>
+      </div>
+      <div>
+        <div class="lb-score">${p.score.toLocaleString()}</div>
+        <div style="font-size:0.72rem;color:var(--muted)">نقطة</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== PROFILE =====
+function renderProfile() {
+  if (!currentUser) { showPage('home'); return; }
+  const p = currentUser.data;
+  document.getElementById('profileContent').innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-avatar" style="background:${p.color}22;color:${p.color}">${p.name[0]}</div>
+      <div class="profile-info">
+        <h2>${p.name}</h2>
+        <div class="role"><span class="badge badge-${p.rank}">${p.rank==='admin'?'🛡️ أدمن':p.rank==='vip'?'⭐ VIP':'🎮 لاعب'}</span></div>
+        <div class="profile-stats">
+          <div class="ps"><div class="val">${p.score.toLocaleString()}</div><div class="lbl">النقاط</div></div>
+          <div class="ps"><div class="val">${p.level}</div><div class="lbl">المستوى</div></div>
+          <div class="ps"><div class="val">${p.ping}ms</div><div class="lbl">البينج</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="margin-bottom:16px;font-size:0.88rem;color:var(--muted)">📊 تقدم المستوى</div>
+      <div style="display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:8px">
+        <span>Lv.${p.level}</span>
+        <span style="color:var(--muted)">${(p.level%10)*10}% للمستوى ${p.level+1}</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar" style="width:${(p.level%10)*10}%"></div></div>
+      <div style="margin-top:20px;font-size:0.82rem;color:var(--muted)">
+        ${currentUser.role==='admin'?'<p style="color:var(--accent2)">🛡️ لديك صلاحيات المشرف — <a href="#" onclick="showPage(\'admin\')" style="color:var(--accent)">فتح لوحة الإدارة</a></p>':'<p>يمكنك التواصل مع الأدمن في السيرفر للترقية إلى VIP.</p>'}
+      </div>
+    </div>
+  `;
+}
+
+// ===== ADMIN =====
+function showAdminSection(name, el) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('as-' + name).classList.add('active');
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function renderAdminPlayers() {
+  document.getElementById('adminPlayersTable').innerHTML = allPlayers.map(p => `
+    <tr>
+      <td><div class="player-name">
+        <div class="avatar" style="background:${p.color}22;color:${p.color}">${p.name[0]}</div>${p.name}
+      </div></td>
+      <td><span class="badge badge-${p.rank}">${p.rank==='admin'?'أدمن':p.rank==='vip'?'VIP':'لاعب'}</span></td>
+      <td><span class="badge ${p.online?'badge-online':'badge-offline'}">${p.online?'متصل':'غائب'}</span></td>
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn btn-warn btn-sm" onclick="kickPlayer('${p.name}')">طرد</button>
+        <button class="btn btn-danger btn-sm" onclick="banPlayer('${p.name}')">حظر</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderChatLog() {
+  document.getElementById('chatLog').innerHTML = CHAT_LOG.map(m => `
+    <div class="chat-msg">
+      <span class="chat-time">[${m.time}]</span>
+      <span class="chat-player">${m.player}:</span>
+      <span class="chat-text">${m.msg}</span>
+    </div>
+  `).join('');
+}
+
+function renderAdmins() {
+  const admins = allPlayers.filter(p => p.rank === 'admin');
+  document.getElementById('adminsList').innerHTML = admins.map(p => `
+    <div class="lb-row">
+      <div class="avatar" style="background:${p.color}22;color:${p.color};width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700">${p.name[0]}</div>
+      <div class="lb-info">
+        <div class="lb-name">${p.name}</div>
+        <div class="lb-sub">المستوى ${p.level} • ${p.score.toLocaleString()} نقطة</div>
+      </div>
+      <span class="badge ${p.online?'badge-online':'badge-offline'}">${p.online?'متصل':'غائب'}</span>
+    </div>
+  `).join('');
+}
+
+function renderAdminLog() {
+  const events = [
+    '🟢 تسجيل دخول: SHADOW_X',
+    '🔴 مغادرة: Ahmed_GTA',
+    '⚠️ تحذير: Dragon_SA من Night_Wolf',
+    '🎮 انضم: Ghost_Rider',
+    '🏆 إنجاز: Pro_Killer وصل للمستوى 38',
+  ];
+  document.getElementById('adminLog').innerHTML = events.map(e => `<div style="padding:4px 0;border-bottom:1px solid var(--border)">${e}</div>`).join('');
+}
+
+function kickPlayer(name) {
+  showToast(`⚠️ تم طرد ${name} من السيرفر`);
+}
+function banPlayer(name) {
+  showToast(`🚫 تم حظر ${name}`);
+}
+
+function sendAnnounce() {
+  const msg = document.getElementById('announceMsg').value.trim();
+  if (!msg) return;
+  showToast('📢 تم إرسال الإعلان: ' + msg);
+  document.getElementById('announceMsg').value = '';
+  // In production: POST to MTA HTTP API
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== START =====
+init();
+
+/* ====================================================
+   HOW TO CONNECT TO REAL MTA SERVER:
+   
+   1. In MTA:SA, create a resource with HTTP handler:
+      exports['webpanel']:getPlayers()
+   
+   2. In meta.xml add:
+      <http_access_allowed>true</http_access_allowed>
+   
+   3. Replace the mock fetch calls with:
+      fetch('http://YOUR_IP:PORT/YOUR_RESOURCE/players')
+        .then(r => r.json())
+        .then(data => renderPlayersTable(data.players))
+   
+   4. Use MTA's httpWrite() in Lua to return JSON:
+      httpWrite(toJSON(playersData))
+   ==================================================== */
+</script>
 </body>
 </html>
